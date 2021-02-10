@@ -28,10 +28,10 @@ let handle =
         moved_permanently randUrl)
 
 [<EntryPoint>]
-let main argv =
+let main _ =
     let config =
         { defaultConfig with
-              bindings = [ HttpBinding.createSimple HTTP "localhost" 80 ] }
+              bindings = [ HttpBinding.create HTTP IPAddress.Loopback (uint16 80) ] }
 
     startWebServer config handle
     0 // return an integer exit code
