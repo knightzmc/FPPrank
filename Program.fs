@@ -5,6 +5,11 @@ open Suave
 open Suave.Redirection
 open Suave.SerilogExtensions
 open Serilog
+open Suave.Writers
+open Suave.Filters
+open Suave.Filters
+open Suave.Operators
+open Suave.Successful
 
 let urls =
     [| "elixir-lang.org"
@@ -23,22 +28,31 @@ let randFrom (arr: 'a []) (random: Random) =
 let urlResponse (ctx: HttpContext) =
     let randUrl = randFrom urls random |> (+) "https://"
     let logger = ctx.Logger()
+   
     logger.Information("Replying with redirect to {randUrl}", randUrl)
+
     found randUrl
 
-let webApp = context (urlResponse)
+let noCache =
+  setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
+  >=> setHeader "Pragma" "no-cache"
+  >=> setHeader "Expires" "0"
+  
+let webApp = noCache >=> context (urlResponse)
 let webAppWithLogging = SerilogAdapter.Enable(webApp)
+
 
 Log.Logger <-
     LoggerConfiguration()
         .Destructure.FSharpTypes()
         .WriteTo.Console()
         .CreateLogger()
-
+        
 [<EntryPoint>]
 let main _ =
     let config =
         { defaultConfig with
+          
               bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 80 ] }
 
     startWebServer config webAppWithLogging
