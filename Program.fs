@@ -31,7 +31,7 @@ let handle =
 let main argv =
     let config =
         { defaultConfig with
-              bindings = [ HttpBinding.createSimple HTTP "127.0.0.1" 80 ] }
+              bindings = [ HttpBinding.createSimple HTTP "localhost" 80 ] }
 
     startWebServer config handle
     0 // return an integer exit code
