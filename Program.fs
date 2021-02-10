@@ -31,7 +31,7 @@ let handle =
 let main _ =
     let config =
         { defaultConfig with
-              bindings = [ HttpBinding.create HTTP IPAddress.Loopback (uint16 80) ] }
+              bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 80 ] }
 
     startWebServer config handle
     0 // return an integer exit code
