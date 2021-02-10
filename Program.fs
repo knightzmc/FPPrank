@@ -25,16 +25,15 @@ let randFrom (arr: 'a []) (random: Random) =
 
 let urlResponse _ =
     let randUrl = randFrom urls random |> (+) "https://"
-    redirect randUrl
-    
+    found randUrl
+
 let handle = context (urlResponse)
 
-    
 [<EntryPoint>]
 let main _ =
     let config =
         { defaultConfig with
               bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 80 ] }
-
+        
     startWebServer config handle
-    0 // return an integer exit code
+    0
