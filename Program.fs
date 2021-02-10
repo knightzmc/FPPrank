@@ -20,24 +20,26 @@ let nth arr i = Array.item i arr
 let randFrom (arr: 'a []) (random: Random) =
     Array.length arr |> random.Next |> nth arr
 
-let urlResponse _ =
+let urlResponse (ctx: HttpContext) =
     let randUrl = randFrom urls random |> (+) "https://"
+    let logger = ctx.Logger()
+    logger.Information("Replying with redirect to {randUrl}", randUrl)
     found randUrl
 
 let webApp = context (urlResponse)
 let webAppWithLogging = SerilogAdapter.Enable(webApp)
 
 Log.Logger <-
-   LoggerConfiguration()
-    .Destructure.FSharpTypes()
-    .WriteTo.Console()
-    .CreateLogger()
-    
+    LoggerConfiguration()
+        .Destructure.FSharpTypes()
+        .WriteTo.Console()
+        .CreateLogger()
+
 [<EntryPoint>]
 let main _ =
     let config =
         { defaultConfig with
               bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 80 ] }
 
-    startWebServer config webApp
+    startWebServer config webAppWithLogging
     0
