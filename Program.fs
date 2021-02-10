@@ -29,7 +29,7 @@ let urlResponse (ctx: HttpContext) =
     let randUrl = randFrom urls random |> (+) "https://"
     let logger = ctx.Logger()
    
-    logger.Information("Replying with redirect to {randUrl}", randUrl)
+    logger.Information("Replying to {sourceUrl} with redirect to {randUrl}", randUrl, ctx.request.url.ToString())
 
     found randUrl
 
@@ -40,7 +40,6 @@ let noCache =
   
 let webApp = noCache >=> context (urlResponse)
 let webAppWithLogging = SerilogAdapter.Enable(webApp)
-
 
 Log.Logger <-
     LoggerConfiguration()
