@@ -1,13 +1,10 @@
 ﻿// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
 
 open System
-open System
-open System.IO
 open Suave
-open Suave.Headers
-open Suave.Response
-open Suave.Http
 open Suave.Redirection
+open Suave.SerilogExtensions
+open Serilog
 
 let urls =
     [| "elixir-lang.org"
@@ -27,13 +24,20 @@ let urlResponse _ =
     let randUrl = randFrom urls random |> (+) "https://"
     found randUrl
 
-let handle = context (urlResponse)
+let webApp = context (urlResponse)
+let webAppWithLogging = SerilogAdapter.Enable(webApp)
 
+Log.Logger <-
+   LoggerConfiguration()
+    .Destructure.FSharpTypes()
+    .WriteTo.Console()
+    .CreateLogger()
+    
 [<EntryPoint>]
 let main _ =
     let config =
         { defaultConfig with
               bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 80 ] }
-        
-    startWebServer config handle
+
+    startWebServer config webApp
     0
