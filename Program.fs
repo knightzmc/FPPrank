@@ -1,5 +1,9 @@
-﻿// Learn more about F# at http://docs.microsoft.com/dotnet/fsharp
+﻿module FPPrank.Main
 
+open FPPrank.Model.Model
+open Logging
+open Model
+open Infrastructure
 open System
 open Suave
 open Suave.Redirection
@@ -10,49 +14,35 @@ open Suave.Filters
 open Suave.Filters
 open Suave.Operators
 open Suave.Successful
+open Suave.DotLiquid
+open DotLiquid
 
-let urls =
-    [| "elixir-lang.org"
-       "haskell.org"
-       "elm-lang.org"
-       "ocaml.org"
-       "fsharp.org"
-       "clojure.org" |]
 
-let random = Random()
-let nth arr i = Array.item i arr
-
-let randFrom (arr: 'a []) (random: Random) =
-    Array.length arr |> random.Next |> nth arr
+setTemplatesDir "./templates"
 
 let urlResponse (ctx: HttpContext) =
-    let randUrl = randFrom urls random |> (+) "https://"
+    let randUrl = randomUrl ()
     let logger = ctx.Logger()
-   
-    logger.Information("Replying to {sourceUrl} with redirect to {randUrl}", randUrl, ctx.request.url.ToString())
-
-    found randUrl
+    let url = ctx.request.url.AbsolutePath
+    let title = url |> formatUrlToTitle
+    let data: Model = { title = title; url = url; redirect = randUrl }
+    logger.Information("Replying to {sourceUrl} with redirect to {randUrl}", randUrl, ctx.connection.ipAddr)
+    page "index.liquid" data
 
 let noCache =
-  setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
-  >=> setHeader "Pragma" "no-cache"
-  >=> setHeader "Expires" "0"
-  
-let webApp = noCache >=> context (urlResponse)
-let webAppWithLogging = SerilogAdapter.Enable(webApp)
+    setHeader "Cache-Control" "no-cache, no-store, must-revalidate"
+    >=> setHeader "Pragma" "no-cache"
+    >=> setHeader "Expires" "0"
 
-Log.Logger <-
-    LoggerConfiguration()
-        .Destructure.FSharpTypes()
-        .WriteTo.Console()
-        .CreateLogger()
-        
+let webApp =
+    context (urlResponse) >=> noCache
+    |> wrapWithLogging
+
 [<EntryPoint>]
 let main _ =
     let config =
         { defaultConfig with
-          
               bindings = [ HttpBinding.createSimple HTTP "0.0.0.0" 80 ] }
 
-    startWebServer config webAppWithLogging
+    startWebServer config webApp
     0
