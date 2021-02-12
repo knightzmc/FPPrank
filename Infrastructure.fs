@@ -26,20 +26,20 @@ let capitalise str =
         Some(str.ToUpper())
     else
         let first = Char.ToUpper str.[0] |> Char.ToString
-        let rem = str.[1..]
-        Some(first + rem)
+        let other = str.[1..]
+        Some(first + other)
 
-let splitWords str = String.split '-' str
+let words str = String.split '-' str
 
 let lastIndexOf (str: string) (c: string) = str.LastIndexOf c
-let subStr (i: string) (s: int) = i.Substring s
+let subString (i: string) (s: int) = i.Substring s
 
 let getPathAfterUrl (str: string) =
-    lastIndexOf str "/" |> (+) 1 |> subStr str
+    lastIndexOf str "/" |> (+) 1 |> subString str
 
 let formatUrlToTitle =
     getPathAfterUrl
-    >> splitWords
+    >> words
     >> List.map capitalise
     >> List.filter Option.isSome
     >> List.map Option.get

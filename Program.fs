@@ -32,7 +32,7 @@ let noCache =
     >=> setHeader "Expires" "0"
 
 let webApp =
-    context (urlResponse) >=> noCache
+    context urlResponse >=> noCache
     |> wrapWithLogging
 
 [<EntryPoint>]
