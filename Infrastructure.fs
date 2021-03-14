@@ -8,7 +8,8 @@ let urls =
        "elm-lang.org"
        "ocaml.org"
        "fsharp.org"
-       "clojure.org" |]
+       "clojure.org" 
+       "rust-lang.org" |]
 
 let random = Random()
 
