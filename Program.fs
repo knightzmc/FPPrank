@@ -12,6 +12,7 @@ open Suave.DotLiquid
 
 setTemplatesDir "./templates"
 
+
 let urlResponse (ctx: HttpContext) =
     let randUrl = randomUrl ()
     let logger = ctx.Logger()
@@ -32,8 +33,7 @@ let noCache =
     >=> setHeader "Expires" "0"
 
 let webApp =
-    context urlResponse >=> noCache
-    |> wrapWithLogging
+    context urlResponse >=> noCache |> wrapWithLogging
 
 [<EntryPoint>]
 let main _ =
