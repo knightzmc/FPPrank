@@ -9,7 +9,9 @@ let urls =
        "ocaml.org"
        "fsharp.org"
        "clojure.org" 
-       "rust-lang.org" |]
+       "rust-lang.org"
+       "https://cdn.discordapp.com/attachments/695431668944732270/823918793402744862/1616507924294.mp4" 
+       "https://en.wikipedia.org/wiki/Simon_Peyton_Jones" |]
 
 let random = Random()
 
