@@ -12,7 +12,8 @@ let urls =
        "rust-lang.org"
        "cdn.discordapp.com/attachments/695431668944732270/823918793402744862/1616507924294.mp4" 
        "en.wikipedia.org/wiki/Simon_Peyton_Jones" 
-       "en.wikipedia.org/wiki/Rich_Hickey" |]
+       "en.wikipedia.org/wiki/Rich_Hickey" 
+       "hackage.haskell.org/package/base-4.15.0.0/docs/Prelude.html#t:Monad" |]
 
 let random = Random()
 
