@@ -14,7 +14,8 @@ let urls =
        "en.wikipedia.org/wiki/Simon_Peyton_Jones" 
        "en.wikipedia.org/wiki/Rich_Hickey" 
        "hackage.haskell.org/package/base-4.15.0.0/docs/Prelude.html#t:Monad"
-       "github.com/haskell/haskell-mode" |]
+       "github.com/haskell/haskell-mode"
+       "en.wikipedia.org/wiki/Pure_function" |]
 
 let random = Random()
 
